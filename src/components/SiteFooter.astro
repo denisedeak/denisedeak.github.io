@@ -1,0 +1,81 @@
+---
+import { footerLinks, site } from '../data/site';
+import { url } from '../lib/url';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <ul class="footer-links">
+    {
+      footerLinks.map((item) => (
+        <li>
+          <a
+            href={url(item.href)}
+            {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="colophon">
+    <span>&copy; {year} {site.name}</span>
+    <span>Open to worldwide work.</span>
+  </p>
+</footer>
+
+<style>
+  .site-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: clamp(2.5rem, 6vw, 5rem) var(--gutter) clamp(1.5rem, 3vw, 2.5rem);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .footer-links a {
+    font-size: clamp(0.62rem, 0.85vw, 0.8rem);
+    letter-spacing: 0.14em;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .footer-links a:hover {
+    opacity: 0.5;
+  }
+
+  /* Nudge the contact line away from the navigation group, the way the
+     reference splits site links from reach-out links. */
+  .footer-links li:last-child {
+    margin-top: 0.75rem;
+  }
+
+  .colophon {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+    text-align: right;
+    font-size: clamp(0.62rem, 0.85vw, 0.8rem);
+    letter-spacing: 0.1em;
+    color: var(--ink-60);
+  }
+
+  @media (max-width: 640px) {
+    .colophon {
+      text-align: left;
+    }
+  }
+</style>

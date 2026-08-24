@@ -1,0 +1,144 @@
+---
+import Base from '../../layouts/Base.astro';
+import { projects, projectHref, projectImage, type Project } from '../../data/projects';
+import { url } from '../../lib/url';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+
+// Next case study in the list, wrapping around.
+const idx = projects.findIndex((p) => p.slug === project.slug);
+const next = projects[(idx + 1) % projects.length];
+---
+
+<Base title={project.title} description={project.summary}>
+  <article class="case">
+    <header class="case-head">
+      <h1>{project.title}</h1>
+      <dl class="meta">
+        <div>
+          <dt>Year</dt>
+          <dd>{project.year}</dd>
+        </div>
+        <div>
+          <dt>Scope</dt>
+          <dd>{project.role}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <p class="summary">{project.summary}</p>
+
+    <img
+      class="case-image"
+      src={url(projectImage(project))}
+      alt={`${project.title} — project imagery`}
+      width="344"
+      height="430"
+      decoding="async"
+    />
+
+    <nav class="case-next" aria-label="Next project">
+      <a href={url(projectHref(next))}>
+        <span>Next</span>
+        <strong>{next.title}</strong>
+      </a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .case {
+    max-width: 1100px;
+    margin-inline: auto;
+    padding: clamp(9rem, 20vw, 16rem) var(--gutter) 0;
+  }
+
+  .case-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    border-bottom: 1px solid var(--ink-15);
+  }
+
+  h1 {
+    margin: 0;
+    font-weight: 400;
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+
+  .meta {
+    display: flex;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+  }
+
+  .meta dt {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+
+  .meta dd {
+    margin: 0.35rem 0 0;
+    font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+  }
+
+  .summary {
+    max-width: 62ch;
+    margin: clamp(2rem, 5vw, 3.5rem) 0;
+    font-size: clamp(1.05rem, 1.9vw, 1.45rem);
+    line-height: 1.55;
+  }
+
+  .case-image {
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .case-next {
+    margin-top: clamp(3rem, 8vw, 6rem);
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 1px solid var(--ink-15);
+  }
+
+  .case-next a {
+    display: grid;
+    gap: 0.5rem;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .case-next a:hover {
+    opacity: 0.55;
+  }
+
+  .case-next span {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+  }
+
+  .case-next strong {
+    font-weight: 400;
+    font-size: clamp(1.6rem, 4.5vw, 3rem);
+    line-height: 1.15;
+  }
+</style>

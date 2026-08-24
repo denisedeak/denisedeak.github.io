@@ -1,0 +1,167 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+
+const services = [
+  {
+    name: 'BRANDING / VISUAL IDENTITY',
+    lines: ['Positioning / Creative direction', 'Logotype / Visual system / Print / Packaging'],
+    from: 'From €2,000',
+  },
+  {
+    name: 'WEBSITE',
+    lines: ['Art direction / UX / UI design', 'Build, launch and handover'],
+    from: 'From €3,000',
+  },
+  {
+    name: 'SOCIALS',
+    lines: ['Templates / Campaign art direction', 'Content systems your team can run'],
+    from: 'From €800',
+  },
+];
+---
+
+<Base title="about / contact">
+  <section class="intro">
+    <p>
+      We are a small design studio working across lifestyle, fashion and beauty. We build
+      visual identities and the websites that carry them — systems simple enough that the
+      people who inherit them can keep them consistent.
+    </p>
+    <p>Open to worldwide work.</p>
+  </section>
+
+  <section class="cta">
+    <h2>Interested in collaborating?</h2>
+    <a class="cta-link" href={`mailto:${site.email}?subject=Project%20Discussion`}>
+      Get in touch
+    </a>
+    <a class="cta-link" href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
+      Book a call
+    </a>
+  </section>
+
+  <section class="services">
+    <h2 class="services-title">SERVICES</h2>
+    <ul>
+      {
+        services.map((s) => (
+          <li>
+            <h3>{s.name}</h3>
+            <div class="detail">
+              {s.lines.map((l) => (
+                <p>{l}</p>
+              ))}
+            </div>
+            <p class="price">{s.from}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  section {
+    padding: 0 var(--gutter);
+    max-width: 1100px;
+    margin-inline: auto;
+  }
+
+  .intro {
+    padding-top: clamp(9rem, 20vw, 16rem);
+    font-size: clamp(1.05rem, 2vw, 1.6rem);
+    line-height: 1.55;
+    max-width: 62ch;
+  }
+
+  .intro p + p {
+    margin-top: 1.5em;
+  }
+
+  .cta {
+    padding-top: clamp(4rem, 10vw, 8rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: clamp(1rem, 3vw, 2.5rem);
+  }
+
+  .cta h2 {
+    margin: 0;
+    font-weight: 400;
+    font-size: clamp(1.6rem, 4.5vw, 3.4rem);
+    line-height: 1.2;
+    flex: 1 1 100%;
+  }
+
+  .cta-link {
+    font-size: clamp(0.72rem, 1vw, 0.9rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 0.2em;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .cta-link:hover {
+    opacity: 0.5;
+  }
+
+  .services {
+    padding-top: clamp(4rem, 10vw, 8rem);
+  }
+
+  .services-title {
+    margin: 0 0 2rem;
+    font-size: clamp(0.72rem, 1vw, 0.9rem);
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: var(--ink-60);
+  }
+
+  .services ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .services li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto;
+    gap: clamp(1rem, 3vw, 3rem);
+    align-items: start;
+    padding: clamp(1.4rem, 3vw, 2.2rem) 0;
+    border-top: 1px solid var(--ink-15);
+  }
+
+  .services li:last-child {
+    border-bottom: 1px solid var(--ink-15);
+  }
+
+  .services h3 {
+    margin: 0;
+    font-weight: 400;
+    font-size: clamp(0.85rem, 1.3vw, 1.05rem);
+    letter-spacing: 0.1em;
+  }
+
+  .detail p,
+  .price {
+    margin: 0;
+    font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+    line-height: 1.7;
+    color: var(--ink-60);
+  }
+
+  .price {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 720px) {
+    .services li {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+  }
+</style>

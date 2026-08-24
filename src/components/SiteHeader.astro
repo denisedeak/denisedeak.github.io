@@ -1,0 +1,115 @@
+---
+import { site, nav } from '../data/site';
+import { url } from '../lib/url';
+
+interface Props {
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+const here = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class:list={['site-header', overlay && 'is-overlay']}>
+  <a class="wordmark" href={url('/')}>{site.name}</a>
+
+  <nav class="site-nav" aria-label="Primary">
+    <ul>
+      {
+        nav.map((item) => {
+          const href = url(item.href);
+          const current = !item.external && href.replace(/\/$/, '') === here;
+          return (
+            <li>
+              <a
+                href={href}
+                aria-current={current ? 'page' : undefined}
+                {...(item.external
+                  ? { target: '_blank', rel: 'noopener noreferrer' }
+                  : {})}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 40;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--gutter);
+    padding: clamp(0.5rem, 1.4vw, 1.1rem) var(--gutter) 0;
+    pointer-events: none;
+  }
+
+  .site-header > * {
+    pointer-events: auto;
+  }
+
+  /* The wordmark is the loudest element on the page: a tightly tracked
+     grotesque scaled to the viewport so it always fills the top edge. */
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 8.6vw, 8.5rem);
+    letter-spacing: -0.03em;
+    line-height: 0.86;
+    margin: 0;
+    white-space: nowrap;
+    color: var(--ink);
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .is-overlay .wordmark {
+    color: var(--overlay);
+  }
+
+  .wordmark:hover {
+    opacity: 0.72;
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: clamp(0.9rem, 2.4vw, 2.5rem);
+    list-style: none;
+    margin: 0;
+    padding: clamp(0.35rem, 0.9vw, 0.9rem) 0 0;
+  }
+
+  .site-nav a {
+    font-family: var(--font-serif);
+    font-size: clamp(0.68rem, 0.95vw, 0.95rem);
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    white-space: nowrap;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .is-overlay .site-nav a {
+    color: var(--overlay);
+  }
+
+  .site-nav a:hover,
+  .site-nav a[aria-current='page'] {
+    opacity: 0.6;
+  }
+
+  @media (max-width: 640px) {
+    .site-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .site-nav ul {
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+  }
+</style>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="344" height="430" viewBox="0 0 344 430" role="img" aria-label="NORTHWIND">
+  <defs>
+    <linearGradient id="g-northwind" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#dcd6cd"/>
+      <stop offset="100%" stop-color="#9a8f83"/>
+    </linearGradient>
+    
+  <filter id="grain-northwind" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  </defs>
+  <rect width="344" height="430" fill="url(#g-northwind)"/>
+  <g opacity="0.28" stroke="#9a8f83" stroke-width="1" fill="none">
+    <circle cx="172" cy="180.6" r="89.44"/>
+    <circle cx="172" cy="180.6" r="130.72"/>
+  </g>
+  <rect width="344" height="430" filter="url(#grain-northwind)" opacity="0.11"
+        style="mix-blend-mode:overlay"/>
+  <text x="50%" y="404" text-anchor="middle"
+        font-family="Times New Roman, Times, serif" font-size="19"
+        letter-spacing="3" fill="#3a332c" opacity="0.65">NORTHWIND</text>
+</svg>
