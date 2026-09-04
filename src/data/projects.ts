@@ -34,8 +34,9 @@ export type Project = {
  */
 export const projects: Project[] = [
   {
-    title: 'VELVET HOUR',
-    slug: 'velvet-hour',
+    title: 'Billion Dollar Boy',
+    slug: 'billion-dollar-boy',
+    image: 'velvet-hour.svg',
     year: '2025',
     role: 'Visual identity / Web design',
     summary:
@@ -43,8 +44,9 @@ export const projects: Project[] = [
     reveal: { w: 320, rotate: -3 },
   },
   {
-    title: 'NORTHWIND',
-    slug: 'northwind',
+    title: 'FiveTwoNine',
+    slug: 'fivetwonine',
+    image: 'northwind.svg',
     year: '2025',
     role: 'Branding / Art direction',
     summary:
@@ -52,8 +54,9 @@ export const projects: Project[] = [
     reveal: { w: 340, rotate: 4, dy: 10 },
   },
   {
-    title: 'PAPER MOON',
-    slug: 'paper-moon',
+    title: 'The Identity List',
+    slug: 'the-identity-list',
+    image: 'paper-moon.svg',
     year: '2024',
     role: 'Art direction / Campaign',
     summary:
@@ -61,8 +64,9 @@ export const projects: Project[] = [
     reveal: { w: 300, rotate: -5, dx: -20 },
   },
   {
-    title: 'QUARRY',
-    slug: 'quarry',
+    title: 'Spotify Africa',
+    slug: 'spotify-africa',
+    image: 'quarry.svg',
     year: '2024',
     role: 'Visual identity / Packaging',
     summary:
@@ -70,8 +74,9 @@ export const projects: Project[] = [
     reveal: { w: 330, rotate: 2 },
   },
   {
-    title: 'CASSIA',
-    slug: 'cassia',
+    title: 'OGX',
+    slug: 'ogx',
+    image: 'cassia.svg',
     year: '2024',
     role: 'Identity / Print',
     summary:
@@ -79,8 +84,9 @@ export const projects: Project[] = [
     reveal: { w: 300, rotate: -4, dy: -12 },
   },
   {
-    title: 'THE TRAVELOGUE',
-    slug: 'the-travelogue',
+    title: 'Snapchat',
+    slug: 'snapchat',
+    image: 'the-travelogue.svg',
     year: '2024',
     role: 'Web design / Editorial',
     summary:
@@ -88,8 +94,9 @@ export const projects: Project[] = [
     reveal: { w: 360, rotate: 3 },
   },
   {
-    title: 'LANTERN',
-    slug: 'lantern',
+    title: 'Roblox',
+    slug: 'roblox',
+    image: 'lantern.svg',
     year: '2023',
     role: 'Brand system / Social',
     summary:
@@ -97,8 +104,9 @@ export const projects: Project[] = [
     reveal: { w: 330, rotate: -2, dx: 15 },
   },
   {
-    title: 'DRIFTWOOD',
-    slug: 'driftwood',
+    title: 'Hotel Chocolat',
+    slug: 'hotel-chocolat',
+    image: 'driftwood.svg',
     year: '2023',
     role: 'Visual identity',
     summary:
@@ -106,8 +114,9 @@ export const projects: Project[] = [
     reveal: { w: 310, rotate: 5 },
   },
   {
-    title: 'SEPTEMBER',
-    slug: 'september',
+    title: 'Muse Vol.2',
+    slug: 'muse-vol-2',
+    image: 'september.svg',
     year: '2023',
     role: 'Branding / Packaging',
     summary:
@@ -115,8 +124,9 @@ export const projects: Project[] = [
     reveal: { w: 320, rotate: -3, dy: 8 },
   },
   {
-    title: 'BLUE HOUR',
-    slug: 'blue-hour',
+    title: 'MARIE',
+    slug: 'marie',
+    image: 'blue-hour.svg',
     year: '2023',
     role: 'Visual identity / Web design',
     summary:

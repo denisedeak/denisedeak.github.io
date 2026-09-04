@@ -1,5 +1,21 @@
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Variable.woff2') format('woff2');
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sentient';
+  src: url('/fonts/Sentient-Variable.woff2') format('woff2');
+  font-weight: 200 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---------------------------------------------------------------
-   Design tokens — measured from the reference site.
+   Design tokens.
    --------------------------------------------------------------- */
 :root {
   --paper: #faf9f6; /* warm off-white page ground */
@@ -7,11 +23,15 @@
   --ink-60: rgba(0, 0, 0, 0.6);
   --ink-15: rgba(0, 0, 0, 0.15);
   --overlay: #faf9f6; /* type sitting on imagery */
+  --butter: #fdf0ab;
+  --cocoa: #59341d;
+  --mist: #eaf0f1;
+  --blush: #efcad9;
+  --vermilion: #bf4e32;
 
   /* Oversized wordmark: a tightly-tracked grotesque. */
-  --font-display: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  /* Everything else: a Mincho serif with wide, airy tracking. */
-  --font-serif: 'BIZ UDMincho', 'Times New Roman', Times, serif;
+  --font-display: 'Satoshi', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-serif: 'Sentient', 'Times New Roman', Times, serif;
 
   --gutter: clamp(0.75rem, 2.2vw, 2rem);
   --hero-min: 88svh;
@@ -40,6 +60,18 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+body.is-landing {
+  height: 100svh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+body.is-landing main {
+  min-height: 0;
 }
 
 img {

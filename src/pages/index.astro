@@ -5,26 +5,37 @@ import { site } from '../data/site';
 import { url } from '../lib/url';
 ---
 
-<Base title="select projects" overlayHeader>
-  <section class="hero">
-    <img
-      class="hero-media"
-      src={url(`/images/${site.heroImage}`)}
-      alt=""
-      width="1600"
-      height="1000"
-      fetchpriority="high"
-      decoding="async"
-    />
-    <div class="hero-scrim" aria-hidden="true"></div>
-    <ProjectCloud />
+<Base title="select projects" overlayHeader landing>
+  <section class="landing" aria-label="Nise Studio selected projects">
+    <div class="image-stage">
+      <img
+        class="hero-media"
+        src={url(`/images/${site.heroImage}`)}
+        alt=""
+        width="1920"
+        height="1080"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <div class="hero-wash" aria-hidden="true"></div>
+      <ProjectCloud />
+    </div>
+
   </section>
 </Base>
 
 <style>
-  .hero {
+  .landing {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    display: grid;
+  }
+
+  .image-stage {
     position: relative;
-    min-height: var(--hero-min);
+    min-height: 0;
     overflow: hidden;
     isolation: isolate;
   }
@@ -35,20 +46,32 @@ import { url } from '../lib/url';
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 35%;
+    object-position: center;
     z-index: 0;
   }
 
-  /* A soft top-down scrim keeps the white wordmark legible over any photo. */
-  .hero-scrim {
+  .hero-wash {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.28) 0%,
-      rgba(0, 0, 0, 0.06) 32%,
-      rgba(0, 0, 0, 0.1) 100%
-    );
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.03) 35%, rgba(0, 0, 0, 0.12));
+  }
+
+  @media (max-width: 760px) {
+    .landing {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      margin: 0;
+    }
+
+    .image-stage {
+      min-height: 31rem;
+    }
+
+    .hero-media {
+      object-position: 48% center;
+    }
+
   }
 </style>

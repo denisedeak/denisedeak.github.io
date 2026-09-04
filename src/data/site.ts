@@ -1,11 +1,11 @@
 export const site = {
   /** Shown as the oversized wordmark in the header. */
-  name: 'STUDIO NORTH',
+  name: 'NISE STUDIO',
   tagline: 'Brand & web design studio',
   description:
     'Independent brand and web design studio working across lifestyle, fashion and beauty.',
   /** Filename inside public/images/ — swap for your own photo (.jpg/.webp/.png). */
-  heroImage: 'hero.svg',
+  heroImage: 'denise-website-main-background.png',
   email: 'hello@example.com',
   /** Swap for your own scheduling link (Cal.com, Google Calendar appointments, etc.). */
   bookingUrl: 'https://cal.com/',
@@ -18,9 +18,9 @@ export const site = {
 export type NavItem = { label: string; href: string; external?: boolean };
 
 export const nav: NavItem[] = [
-  { label: 'select projects', href: '/' },
-  { label: 'about / contact', href: '/about' },
-  { label: 'book call', href: site.bookingUrl, external: true },
+  { label: 'about', href: '/about' },
+  { label: 'play', href: '/#projects' },
+  { label: 'contact', href: '/about#contact' },
 ];
 
 export const footerLinks: NavItem[] = [

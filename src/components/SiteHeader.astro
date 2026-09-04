@@ -40,13 +40,14 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 <style>
   .site-header {
     position: absolute;
-    inset: 0 0 auto 0;
+    inset: 0;
     z-index: 40;
+    width: 100%;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--gutter);
-    padding: clamp(0.5rem, 1.4vw, 1.1rem) var(--gutter) 0;
+    padding: clamp(0.9rem, 1.8vw, 1.5rem) clamp(1rem, 2.5vw, 2rem) 0;
     pointer-events: none;
   }
 
@@ -59,7 +60,7 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
   .wordmark {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(2rem, 8.6vw, 8.5rem);
+    font-size: clamp(2.5rem, 5.65vw, 5.6rem);
     letter-spacing: -0.03em;
     line-height: 0.86;
     margin: 0;
@@ -85,9 +86,10 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
   }
 
   .site-nav a {
-    font-family: var(--font-serif);
-    font-size: clamp(0.68rem, 0.95vw, 0.95rem);
+    font-family: var(--font-display);
+    font-size: clamp(0.56rem, 0.72vw, 0.72rem);
     letter-spacing: 0.02em;
+    text-transform: uppercase;
     color: var(--ink);
     white-space: nowrap;
     transition: opacity var(--dur) var(--ease);
