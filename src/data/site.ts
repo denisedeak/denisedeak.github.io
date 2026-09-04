@@ -10,7 +10,7 @@ export const site = {
   /** Swap for your own scheduling link (Cal.com, Google Calendar appointments, etc.). */
   bookingUrl: 'https://cal.com/',
   social: {
-    instagram: 'https://instagram.com/',
+    instagram: 'https://www.instagram.com/studiobynise',
     linkedin: 'https://www.linkedin.com/in/denisedeak/',
   },
 } as const;
