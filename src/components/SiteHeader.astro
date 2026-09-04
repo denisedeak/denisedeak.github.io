@@ -106,12 +106,38 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
 
   @media (max-width: 640px) {
     .site-header {
+      inset: 0 auto auto 0;
+      height: auto;
       flex-direction: column;
-      align-items: stretch;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0.75rem;
+      padding: 1rem;
     }
+
+    .wordmark {
+      font-size: clamp(2.45rem, 15vw, 4.1rem);
+    }
+
+    .site-nav {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      background: rgba(239, 202, 217, 0.94);
+      backdrop-filter: blur(8px);
+    }
+
     .site-nav ul {
       justify-content: space-between;
-      gap: 0.75rem;
+      gap: 0.5rem;
+      padding: 0;
+    }
+
+    .site-nav a,
+    .is-overlay .site-nav a {
+      color: var(--cocoa);
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
     }
   }
 </style>

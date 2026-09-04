@@ -25,7 +25,6 @@ export const nav: NavItem[] = [
 
 export const footerLinks: NavItem[] = [
   { label: 'PROJECTS', href: '/' },
-  { label: 'ABOUT / CONTACT', href: '/about' },
   { label: 'BEHANCE', href: site.social.behance, external: true },
   { label: 'INSTAGRAM', href: site.social.instagram, external: true },
   {
