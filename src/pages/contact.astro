@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+
+<Base title="contact">
+  <section class="contact-page" aria-labelledby="contact-title">
+    <div class="contact-content">
+      <h1 id="contact-title">Interested in collaborating?</h1>
+      <a class="contact-link" href={`mailto:${site.email}`}>GET IN TOUCH</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  :global(body) {
+    background: var(--butter);
+    color: var(--cocoa);
+  }
+
+  :global(.site-header .wordmark),
+  :global(.site-header .site-nav a) {
+    color: var(--cocoa);
+  }
+
+  :global(.site-footer) {
+    background: var(--butter);
+  }
+
+  .contact-page {
+    display: grid;
+    align-items: center;
+    min-height: calc(100svh - clamp(11rem, 16vw, 14rem));
+    padding: clamp(9rem, 16vw, 13rem) var(--gutter) clamp(4rem, 8vw, 7rem);
+  }
+
+  .contact-content {
+    width: min(100%, 1120px);
+    margin-inline: auto;
+  }
+
+  h1 {
+    max-width: 18ch;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 7.2vw, 7.2rem);
+    font-weight: 450;
+    letter-spacing: -0.055em;
+    line-height: 0.95;
+  }
+
+  .contact-link {
+    display: inline-block;
+    margin-top: clamp(1.25rem, 2.6vw, 2.25rem);
+    border-bottom: 3px solid currentColor;
+    color: var(--cocoa);
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 2rem);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    padding-bottom: 0.12em;
+    text-transform: uppercase;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .contact-link:hover {
+    opacity: 0.6;
+  }
+
+  @media (max-width: 640px) {
+    .contact-page {
+      min-height: calc(100svh - 15rem);
+      padding: 12rem 1rem 4rem;
+    }
+
+    h1 {
+      max-width: 11ch;
+      font-size: clamp(3rem, 14vw, 4.6rem);
+    }
+  }
+</style>

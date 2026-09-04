@@ -6,12 +6,12 @@ export const site = {
     'Independent brand and web design studio working across lifestyle, fashion and beauty.',
   /** Filename inside public/images/ — swap for your own photo (.jpg/.webp/.png). */
   heroImage: 'denise-website-main-background.png',
-  email: 'hello@example.com',
+  email: 'deak.denise@gmail.com',
   /** Swap for your own scheduling link (Cal.com, Google Calendar appointments, etc.). */
   bookingUrl: 'https://cal.com/',
   social: {
     instagram: 'https://instagram.com/',
-    behance: 'https://www.behance.net/',
+    linkedin: 'https://www.linkedin.com/in/denisedeak/',
   },
 } as const;
 
@@ -20,12 +20,12 @@ export type NavItem = { label: string; href: string; external?: boolean };
 export const nav: NavItem[] = [
   { label: 'about', href: '/about' },
   { label: 'play', href: '/#projects' },
-  { label: 'contact', href: '/about#contact' },
+  { label: 'contact', href: '/contact' },
 ];
 
 export const footerLinks: NavItem[] = [
   { label: 'PROJECTS', href: '/' },
-  { label: 'BEHANCE', href: site.social.behance, external: true },
+  { label: 'LINKEDIN', href: site.social.linkedin, external: true },
   { label: 'INSTAGRAM', href: site.social.instagram, external: true },
   {
     label: site.email.toUpperCase(),
