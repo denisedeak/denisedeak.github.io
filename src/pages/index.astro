@@ -75,7 +75,14 @@ import { url } from '../lib/url';
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.03) 35%, rgba(0, 0, 0, 0.12));
+    background:
+      radial-gradient(
+        ellipse 58% 46% at 50% 53%,
+        rgba(52, 25, 14, 0.4) 0%,
+        rgba(89, 52, 29, 0.25) 46%,
+        rgba(89, 52, 29, 0) 100%
+      ),
+      linear-gradient(180deg, rgba(37, 15, 8, 0.1), rgba(89, 52, 29, 0.05) 42%, rgba(37, 15, 8, 0.14));
   }
 
   @media (max-width: 760px) {
@@ -94,6 +101,24 @@ import { url } from '../lib/url';
       object-position: 48% center;
     }
 
+    /* A visible, low-cost fallback for browsers that do not expose WebGL. */
+    .image-stage:not(.is-liquid-ready) .hero-media {
+      animation: mobile-background-drift 14s ease-in-out infinite alternate;
+      transform: scale(1.045);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .image-stage:not(.is-liquid-ready) .hero-media {
+        animation: none;
+        transform: none;
+      }
+    }
+
+    @keyframes mobile-background-drift {
+      from { object-position: 42% 44%; }
+      to { object-position: 58% 56%; }
+    }
+
   }
 </style>
 
@@ -105,6 +130,7 @@ import { url } from '../lib/url';
   // Use the responsive layout breakpoint rather than input type so browser mobile
   // previews receive the same ambient motion as physical phones.
   const useAutonomousLiquid = window.matchMedia('(max-width: 760px)').matches;
+  const useIdleDesktopLiquid = hasFinePointer && !useAutonomousLiquid;
   const canUseLiquid = (hasFinePointer || useAutonomousLiquid) &&
     !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -133,6 +159,7 @@ import { url } from '../lib/url';
         uniform vec2 uPointer;
         uniform float uTime;
         uniform float uEnergy;
+        uniform float uAmbient;
 
         vec2 coverUv(vec2 uv) {
           float canvasRatio = uResolution.x / uResolution.y;
@@ -151,8 +178,18 @@ import { url } from '../lib/url';
           float distanceToPointer = length(delta);
           vec2 direction = normalize(delta + vec2(0.0001));
           float falloff = exp(-distanceToPointer * distanceToPointer * 16.0);
-          float ripple = sin(distanceToPointer * 48.0 - uTime * 7.0) * 0.013;
+          float rippleFrequency = mix(48.0, 44.0, uAmbient);
+          float rippleStrength = mix(0.013, 0.022, uAmbient);
+          float ripple = sin(distanceToPointer * rippleFrequency - uTime * 7.0) * rippleStrength;
           vec2 liquidUv = vUv + direction * ripple * falloff * uEnergy;
+
+          // On the compact layout this becomes a full-frame liquid current,
+          // while desktop retains the cursor's more localised ripple.
+          vec2 ambientFlow = vec2(
+            sin(vUv.y * 12.0 + uTime * 1.1) + sin(vUv.x * 7.0 - uTime * 0.8) * 0.5,
+            cos(vUv.x * 10.0 - uTime * 0.9) + cos(vUv.y * 6.0 + uTime * 0.6) * 0.5
+          ) * 0.018 * uAmbient;
+          liquidUv += ambientFlow;
           gl_FragColor = texture2D(uImage, coverUv(liquidUv));
         }
       `;
@@ -183,6 +220,7 @@ import { url } from '../lib/url';
           const pointer = gl.getUniformLocation(program, 'uPointer');
           const time = gl.getUniformLocation(program, 'uTime');
           const energyUniform = gl.getUniformLocation(program, 'uEnergy');
+          const ambientUniform = gl.getUniformLocation(program, 'uAmbient');
           const texture = gl.createTexture();
           let pointerX = 0.5;
           let pointerY = 0.5;
@@ -190,6 +228,9 @@ import { url } from '../lib/url';
           let targetY = 0.5;
           let energy = 0;
           let lastFrame = 0;
+          let lastRender = 0;
+          let cursorPriorityUntil = 0;
+          let ambientAmount = useAutonomousLiquid ? 1 : (useIdleDesktopLiquid ? 0.38 : 0);
           let isAnimating = false;
           let animationFrame: number | undefined;
 
@@ -211,27 +252,49 @@ import { url } from '../lib/url';
             gl.uniform2f(pointer, pointerX, pointerY);
             gl.uniform1f(time, now * 0.001);
             gl.uniform1f(energyUniform, energy);
+            gl.uniform1f(ambientUniform, ambientAmount);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
           };
 
           const settle = (now: number) => {
             const elapsed = lastFrame ? Math.min(now - lastFrame, 50) : 16;
             lastFrame = now;
+            const cursorHasPriority = now < cursorPriorityUntil;
+            const desiredAmbient = useAutonomousLiquid ? 1 : (useIdleDesktopLiquid && !cursorHasPriority ? 0.38 : 0);
+            const ambientFollow = 1 - Math.exp(-elapsed * 0.008);
+            ambientAmount += (desiredAmbient - ambientAmount) * ambientFollow;
 
             if (useAutonomousLiquid) {
               const seconds = now * 0.001;
-              targetX = 0.5 + Math.sin(seconds * 0.19) * 0.24 + Math.sin(seconds * 0.43 + 1.2) * 0.08;
-              targetY = 0.52 + Math.cos(seconds * 0.15 + 0.45) * 0.2 + Math.sin(seconds * 0.31) * 0.07;
-              energy = 0.58 + Math.sin(seconds * 0.42) * 0.08;
+              targetX = 0.5 + Math.sin(seconds * 0.19) * 0.32 + Math.sin(seconds * 0.43 + 1.2) * 0.12;
+              targetY = 0.5 + Math.cos(seconds * 0.15 + 0.45) * 0.3 + Math.sin(seconds * 0.31) * 0.12;
+              energy = 1.18 + Math.sin(seconds * 0.42) * 0.1;
+            } else if (useIdleDesktopLiquid && !cursorHasPriority) {
+              const seconds = now * 0.001;
+              targetX = 0.5 + Math.sin(seconds * 0.16) * 0.22 + Math.sin(seconds * 0.37 + 1.2) * 0.06;
+              targetY = 0.5 + Math.cos(seconds * 0.13 + 0.45) * 0.17 + Math.sin(seconds * 0.29) * 0.05;
+              energy = 0.42 + Math.sin(seconds * 0.35) * 0.05;
             }
 
             const follow = 1 - Math.exp(-elapsed * 0.05);
             pointerX += (targetX - pointerX) * follow;
             pointerY += (targetY - pointerY) * follow;
-            if (!useAutonomousLiquid) energy *= Math.exp(-elapsed * 0.003);
-            draw(now);
+            if (!useAutonomousLiquid && (!useIdleDesktopLiquid || cursorHasPriority)) {
+              energy *= Math.exp(-elapsed * 0.003);
+            }
 
-            if (useAutonomousLiquid || energy > 0.008 || Math.hypot(targetX - pointerX, targetY - pointerY) > 0.0005) {
+            // Ambient desktop motion is rendered at roughly 30fps; direct cursor
+            // interaction remains at the browser's native refresh rate.
+            const isIdleDesktopFrame = useIdleDesktopLiquid && !cursorHasPriority;
+            if (isIdleDesktopFrame && lastRender && now - lastRender < 32) {
+              animationFrame = requestAnimationFrame(settle);
+              return;
+            }
+
+            draw(now);
+            lastRender = now;
+
+            if (useAutonomousLiquid || useIdleDesktopLiquid || energy > 0.008 || Math.hypot(targetX - pointerX, targetY - pointerY) > 0.0005) {
               animationFrame = requestAnimationFrame(settle);
             } else {
               energy = 0;
@@ -245,6 +308,7 @@ import { url } from '../lib/url';
             if (!isAnimating) {
               isAnimating = true;
               lastFrame = 0;
+              lastRender = 0;
               animationFrame = requestAnimationFrame(settle);
             }
           };
@@ -260,7 +324,7 @@ import { url } from '../lib/url';
             resize();
             draw(0);
             stage.classList.add('is-liquid-ready');
-            if (useAutonomousLiquid) beginSettling();
+            if (useAutonomousLiquid || useIdleDesktopLiquid) beginSettling();
           };
 
           if (!useAutonomousLiquid) {
@@ -269,12 +333,18 @@ import { url } from '../lib/url';
               const nextX = (event.clientX - bounds.left) / bounds.width;
               const nextY = 1 - (event.clientY - bounds.top) / bounds.height;
               const distance = Math.hypot(nextX - targetX, nextY - targetY);
+              // Every cursor movement renews the handoff. Once it stops, the
+              // ambient current eases back in rather than leaving a static pause.
+              cursorPriorityUntil = performance.now() + 380;
               targetX = nextX;
               targetY = nextY;
               energy = Math.min(1, Math.max(energy, 0.28) + distance * 3.2);
               beginSettling();
             });
-            stage.addEventListener('pointerleave', () => beginSettling());
+            stage.addEventListener('pointerleave', () => {
+              cursorPriorityUntil = 0;
+              beginSettling();
+            });
           }
           window.addEventListener('resize', () => {
             resize();
@@ -285,7 +355,7 @@ import { url } from '../lib/url';
               cancelAnimationFrame(animationFrame);
               animationFrame = undefined;
               isAnimating = false;
-            } else if (!document.hidden && useAutonomousLiquid) {
+            } else if (!document.hidden && (useAutonomousLiquid || useIdleDesktopLiquid)) {
               beginSettling();
             }
           });

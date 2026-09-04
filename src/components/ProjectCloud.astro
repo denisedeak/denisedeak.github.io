@@ -21,16 +21,19 @@ import { url } from '../lib/url';
               href={url(projectHref(p))}
               style={`--w:${r.w ?? 320}px; --r:${r.rotate ?? 0}deg; --dx:${r.dx ?? 0}px; --dy:${r.dy ?? 0}px;`}
             >
-              <img
+              <span
                 class="reveal"
-                src={url(projectImage(p))}
-                alt=""
                 aria-hidden="true"
-                loading="lazy"
-                decoding="async"
-                width="344"
-                height="430"
-              />
+              >
+                <img
+                  src={url(projectImage(p))}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width="344"
+                  height="430"
+                />
+              </span>
               <span class="label">{p.title}</span>
             </a>
           </>
@@ -85,8 +88,9 @@ import { url } from '../lib/url';
     z-index: 0;
     left: 50%;
     top: 50%;
-    width: min(var(--w), 42vw);
-    height: auto;
+    width: min(clamp(13rem, 17vw, 20rem), 42vw);
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
     pointer-events: none;
     opacity: 0;
     transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.96)
@@ -96,6 +100,14 @@ import { url } from '../lib/url';
       transform var(--dur) var(--ease);
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
     will-change: opacity, transform;
+  }
+
+  .reveal img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
   .cloud-link:hover .reveal,
