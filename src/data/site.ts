@@ -5,7 +5,7 @@ export const site = {
   description:
     'Independent brand and web design studio working across lifestyle, fashion and beauty.',
   /** Filename inside public/images/ — swap for your own photo (.jpg/.webp/.png). */
-  heroImage: 'denise-website-main-background.png',
+  heroImage: 'landing-background.png',
   email: 'deak.denise@gmail.com',
   /** Swap for your own scheduling link (Cal.com, Google Calendar appointments, etc.). */
   bookingUrl: 'https://cal.com/',

@@ -17,6 +17,7 @@ import { url } from '../lib/url';
         fetchpriority="high"
         decoding="async"
       />
+      <canvas class="hero-liquid" aria-hidden="true"></canvas>
       <div class="hero-wash" aria-hidden="true"></div>
       <ProjectCloud />
     </div>
@@ -48,6 +49,26 @@ import { url } from '../lib/url';
     object-fit: cover;
     object-position: center;
     z-index: 0;
+    transition: opacity 180ms linear;
+  }
+
+  .hero-liquid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms linear;
+  }
+
+  .image-stage.is-liquid-ready .hero-media {
+    opacity: 0;
+  }
+
+  .image-stage.is-liquid-ready .hero-liquid {
+    opacity: 1;
   }
 
   .hero-wash {
@@ -75,3 +96,178 @@ import { url } from '../lib/url';
 
   }
 </style>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('.image-stage');
+  const image = stage?.querySelector<HTMLImageElement>('.hero-media');
+  const canvas = stage?.querySelector<HTMLCanvasElement>('.hero-liquid');
+  const canUseLiquid = window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (stage && image && canvas && canUseLiquid) {
+    const gl = canvas.getContext('webgl', {
+      alpha: false,
+      antialias: false,
+      powerPreference: 'low-power',
+    });
+
+    if (gl) {
+      const vertexSource = `
+        attribute vec2 aPosition;
+        varying vec2 vUv;
+        void main() {
+          vUv = (aPosition + 1.0) * 0.5;
+          gl_Position = vec4(aPosition, 0.0, 1.0);
+        }
+      `;
+      const fragmentSource = `
+        precision mediump float;
+        varying vec2 vUv;
+        uniform sampler2D uImage;
+        uniform vec2 uResolution;
+        uniform vec2 uImageSize;
+        uniform vec2 uPointer;
+        uniform float uTime;
+        uniform float uEnergy;
+
+        vec2 coverUv(vec2 uv) {
+          float canvasRatio = uResolution.x / uResolution.y;
+          float imageRatio = uImageSize.x / uImageSize.y;
+          if (canvasRatio > imageRatio) {
+            uv.y = (uv.y - 0.5) * imageRatio / canvasRatio + 0.5;
+          } else {
+            uv.x = (uv.x - 0.5) * canvasRatio / imageRatio + 0.5;
+          }
+          return clamp(uv, 0.001, 0.999);
+        }
+
+        void main() {
+          vec2 delta = vUv - uPointer;
+          delta.x *= uResolution.x / uResolution.y;
+          float distanceToPointer = length(delta);
+          vec2 direction = normalize(delta + vec2(0.0001));
+          float falloff = exp(-distanceToPointer * distanceToPointer * 16.0);
+          float ripple = sin(distanceToPointer * 48.0 - uTime * 7.0) * 0.013;
+          vec2 liquidUv = vUv + direction * ripple * falloff * uEnergy;
+          gl_FragColor = texture2D(uImage, coverUv(liquidUv));
+        }
+      `;
+
+      const makeShader = (type: number, source: string) => {
+        const shader = gl.createShader(type)!;
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        return gl.getShaderParameter(shader, gl.COMPILE_STATUS) ? shader : null;
+      };
+      const vertex = makeShader(gl.VERTEX_SHADER, vertexSource);
+      const fragment = makeShader(gl.FRAGMENT_SHADER, fragmentSource);
+
+      if (vertex && fragment) {
+        const program = gl.createProgram()!;
+        gl.attachShader(program, vertex);
+        gl.attachShader(program, fragment);
+        gl.linkProgram(program);
+
+        if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
+          const positions = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, positions);
+          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+
+          const position = gl.getAttribLocation(program, 'aPosition');
+          const resolution = gl.getUniformLocation(program, 'uResolution');
+          const imageSize = gl.getUniformLocation(program, 'uImageSize');
+          const pointer = gl.getUniformLocation(program, 'uPointer');
+          const time = gl.getUniformLocation(program, 'uTime');
+          const energyUniform = gl.getUniformLocation(program, 'uEnergy');
+          const texture = gl.createTexture();
+          let pointerX = 0.5;
+          let pointerY = 0.5;
+          let targetX = 0.5;
+          let targetY = 0.5;
+          let energy = 0;
+          let lastFrame = 0;
+          let isAnimating = false;
+
+          const resize = () => {
+            const bounds = stage.getBoundingClientRect();
+            const scale = Math.min(window.devicePixelRatio || 1, 1.5);
+            canvas.width = Math.round(bounds.width * scale);
+            canvas.height = Math.round(bounds.height * scale);
+            gl.viewport(0, 0, canvas.width, canvas.height);
+          };
+
+          const draw = (now: number) => {
+            gl.useProgram(program);
+            gl.bindBuffer(gl.ARRAY_BUFFER, positions);
+            gl.enableVertexAttribArray(position);
+            gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+            gl.uniform2f(resolution, canvas.width, canvas.height);
+            gl.uniform2f(imageSize, image.naturalWidth, image.naturalHeight);
+            gl.uniform2f(pointer, pointerX, pointerY);
+            gl.uniform1f(time, now * 0.001);
+            gl.uniform1f(energyUniform, energy);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+          };
+
+          const settle = (now: number) => {
+            const elapsed = lastFrame ? Math.min(now - lastFrame, 50) : 16;
+            lastFrame = now;
+            const follow = 1 - Math.exp(-elapsed * 0.05);
+            pointerX += (targetX - pointerX) * follow;
+            pointerY += (targetY - pointerY) * follow;
+            energy *= Math.exp(-elapsed * 0.003);
+            draw(now);
+
+            if (energy > 0.008 || Math.hypot(targetX - pointerX, targetY - pointerY) > 0.0005) {
+              requestAnimationFrame(settle);
+            } else {
+              energy = 0;
+              draw(now);
+              isAnimating = false;
+            }
+          };
+
+          const beginSettling = () => {
+            if (!isAnimating) {
+              isAnimating = true;
+              lastFrame = 0;
+              requestAnimationFrame(settle);
+            }
+          };
+
+          const uploadTexture = () => {
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+            resize();
+            draw(0);
+            stage.classList.add('is-liquid-ready');
+          };
+
+          stage.addEventListener('pointermove', (event) => {
+            const bounds = stage.getBoundingClientRect();
+            const nextX = (event.clientX - bounds.left) / bounds.width;
+            const nextY = 1 - (event.clientY - bounds.top) / bounds.height;
+            const distance = Math.hypot(nextX - targetX, nextY - targetY);
+            targetX = nextX;
+            targetY = nextY;
+            energy = Math.min(1, Math.max(energy, 0.28) + distance * 3.2);
+            beginSettling();
+          });
+          stage.addEventListener('pointerleave', () => beginSettling());
+          window.addEventListener('resize', () => {
+            resize();
+            draw(performance.now());
+          });
+
+          if (image.complete) uploadTexture();
+          else image.addEventListener('load', uploadTexture, { once: true });
+        }
+      }
+    }
+  }
+</script>
