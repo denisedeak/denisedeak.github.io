@@ -126,6 +126,10 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
       backdrop-filter: blur(8px);
     }
 
+    :global(body.is-landing) .site-nav {
+      background: rgba(253, 240, 171, 0.94);
+    }
+
     .site-nav ul {
       justify-content: space-between;
       gap: 0.5rem;
