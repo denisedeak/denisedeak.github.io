@@ -46,20 +46,20 @@ import { url } from '../lib/url';
     inset: 0;
     display: grid;
     place-items: center;
-    padding: 18vh var(--gutter) 8vh;
+    padding: 14vh var(--gutter) 4vh;
   }
 
   .cloud {
     position: relative;
     z-index: 20;
     margin: 0;
-    max-width: 1200px;
+    max-width: min(1200px, 94vw);
     text-align: center;
     text-wrap: balance;
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: clamp(1.6rem, 4.85vw, 4rem);
-    line-height: 1.3;
+    font-size: clamp(1.35rem, min(4vw, 7.5svh), 4rem);
+    line-height: 1.2;
     letter-spacing: 0.01em;
     text-transform: uppercase;
     color: var(--overlay);
