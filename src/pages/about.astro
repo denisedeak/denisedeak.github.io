@@ -1,170 +1,261 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site } from '../data/site';
+import { url } from '../lib/url';
 
-const services = [
+const disciplines = [
   {
-    name: 'BRANDING / VISUAL IDENTITY',
-    lines: ['Positioning / Creative direction', 'Logotype / Visual system / Print / Packaging'],
-    from: 'From €2,000',
+    name: 'BRAND / VISUAL IDENTITY',
+    skills: [
+      'Brand Identity',
+      'Visual Identity Systems',
+      'Art Direction',
+      'Creative Direction',
+      'Campaign Design',
+      'Typography',
+      'Logo Design',
+      'Brand Guidelines',
+      'Editorial Design',
+      'Digital Design',
+    ],
   },
   {
-    name: 'WEBSITE',
-    lines: ['Art direction / UX / UI design', 'Build, launch and handover'],
-    from: 'From €3,000',
+    name: '3D & 2D MOTION',
+    skills: [
+      'Motion Design',
+      '2D Animation',
+      '3D Animation',
+      '3D Design',
+      'CGI',
+      'Motion Identity',
+      'Kinetic Typography',
+      'Product Animation',
+    ],
   },
   {
-    name: 'SOCIALS',
-    lines: ['Templates / Campaign art direction', 'Content systems your team can run'],
-    from: 'From €800',
+    name: 'SOCIAL',
+    skills: [
+      'Social Campaigns',
+      'Social Content',
+      'Video Editing',
+      'Carousels',
+      'AR Experiences',
+      'Digital Campaigns',
+      'Content Design',
+    ],
   },
 ];
 ---
 
 <Base title="about / contact">
-  <section class="intro">
-    <p>
-      We are a small design studio working across lifestyle, fashion and beauty. We build
-      visual identities and the websites that carry them — systems simple enough that the
-      people who inherit them can keep them consistent.
-    </p>
-    <p>Open to worldwide work.</p>
-  </section>
+  <section class="about-page" aria-label="About Nise Studio">
+    <div class="about-panel">
+      <figure class="portrait">
+        <img src="/images/denise-portrait.jpg" alt="Denise in front of an orange doorway" />
+      </figure>
 
-  <section class="cta">
-    <h2>Interested in collaborating?</h2>
-    <a class="cta-link" href={`mailto:${site.email}?subject=Project%20Discussion`}>
-      Get in touch
-    </a>
-    <a class="cta-link" href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
-      Book a call
-    </a>
-  </section>
+      <div class="about-copy" id="contact">
+        <p>
+          Hi, I’m Denise, a multidisciplinary designer with a soft spot for big ideas and
+          beautiful details.
+        </p>
+        <p>
+          I work across brand, motion, 3D and digital — bringing ideas to life through
+          thoughtful design, strong visual storytelling and a little bit of play. I’m drawn to
+          thoughtful ideas with character and a point of view.
+        </p>
 
-  <section class="services">
-    <h2 class="services-title">SERVICES</h2>
-    <ul>
-      {
-        services.map((s) => (
-          <li>
-            <h3>{s.name}</h3>
-            <div class="detail">
-              {s.lines.map((l) => (
-                <p>{l}</p>
-              ))}
-            </div>
-            <p class="price">{s.from}</p>
-          </li>
-        ))
-      }
-    </ul>
+        <a class="cv-link" href={url('/documents/denise-deak-2026-cv.pdf')} download>
+          DOWNLOAD CV
+        </a>
+
+        <div class="accordions">
+          {
+            disciplines.map((discipline) => (
+              <details class="discipline">
+                <summary>
+                  <span>{discipline.name}</span>
+                  <span class="plus" aria-hidden="true">+</span>
+                </summary>
+                <div class="skills">
+                  <ul>
+                    {discipline.skills.map((skill) => <li>{skill}</li>)}
+                  </ul>
+                </div>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </div>
   </section>
 </Base>
 
 <style>
-  section {
-    padding: 0 var(--gutter);
-    max-width: 1100px;
+  :global(body) {
+    background: var(--blush);
+  }
+
+  :global(.site-header .wordmark) {
+    color: var(--vermilion);
+  }
+
+  :global(.site-footer) {
+    background: var(--blush);
+  }
+
+  .about-page {
+    padding: clamp(7.5rem, 13vw, 10rem) var(--gutter) clamp(3rem, 7vw, 7rem);
+  }
+
+  .about-panel {
+    max-width: 1280px;
     margin-inline: auto;
-  }
-
-  .intro {
-    padding-top: clamp(9rem, 20vw, 16rem);
-    font-size: clamp(1.05rem, 2vw, 1.6rem);
-    line-height: 1.55;
-    max-width: 62ch;
-  }
-
-  .intro p + p {
-    margin-top: 1.5em;
-  }
-
-  .cta {
-    padding-top: clamp(4rem, 10vw, 8rem);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: clamp(1rem, 3vw, 2.5rem);
-  }
-
-  .cta h2 {
-    margin: 0;
-    font-weight: 400;
-    font-size: clamp(1.6rem, 4.5vw, 3.4rem);
-    line-height: 1.2;
-    flex: 1 1 100%;
-  }
-
-  .cta-link {
-    font-family: var(--font-display);
-    font-size: clamp(0.72rem, 1vw, 0.9rem);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 0.2em;
-    transition: opacity var(--dur) var(--ease);
-  }
-
-  .cta-link:hover {
-    opacity: 0.5;
-  }
-
-  .services {
-    padding-top: clamp(4rem, 10vw, 8rem);
-  }
-
-  .services-title {
-    margin: 0 0 2rem;
-    font-size: clamp(0.72rem, 1vw, 0.9rem);
-    font-weight: 400;
-    font-family: var(--font-display);
-    letter-spacing: 0.18em;
-    color: var(--ink-60);
-  }
-
-  .services ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .services li {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto;
-    gap: clamp(1rem, 3vw, 3rem);
-    align-items: start;
-    padding: clamp(1.4rem, 3vw, 2.2rem) 0;
-    border-top: 1px solid var(--ink-15);
+    grid-template-columns: minmax(16rem, 0.8fr) minmax(0, 1.2fr);
+    background: var(--blush);
+    color: var(--cocoa);
   }
 
-  .services li:last-child {
-    border-bottom: 1px solid var(--ink-15);
-  }
-
-  .services h3 {
+  .portrait {
     margin: 0;
-    font-weight: 400;
+    align-self: start;
+    height: clamp(34rem, 49vw, 52rem);
+  }
+
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 53% center;
+  }
+
+  .about-copy {
+    padding: clamp(1.5rem, 4vw, 4rem);
+    align-self: start;
     font-family: var(--font-display);
-    font-size: clamp(0.85rem, 1.3vw, 1.05rem);
-    letter-spacing: 0.1em;
+    font-size: clamp(1rem, 1.55vw, 1.35rem);
+    line-height: 1.38;
   }
 
-  .detail p,
-  .price {
+  .about-copy p {
+    max-width: 46rem;
     margin: 0;
-    font-size: clamp(0.8rem, 1.1vw, 0.95rem);
-    line-height: 1.7;
-    color: var(--ink-60);
   }
 
-  .price {
-    white-space: nowrap;
+  .about-copy p + p {
+    margin-top: 1.65em;
   }
 
-  @media (max-width: 720px) {
-    .services li {
+  .cv-link {
+    display: inline-block;
+    margin-top: 2.25rem;
+    color: var(--cocoa);
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.15em;
+  }
+
+  .accordions {
+    margin-top: clamp(2.6rem, 5vw, 4.25rem);
+    border-top: 2px solid var(--vermilion);
+  }
+
+  .discipline {
+    border-bottom: 2px solid var(--vermilion);
+  }
+
+  .discipline summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(0.9rem, 1.7vw, 1.25rem) 0;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    font-size: clamp(1.4rem, 2.85vw, 2.7rem);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--vermilion);
+    list-style: none;
+  }
+
+  .discipline summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .plus {
+    flex: 0 0 auto;
+    font-family: var(--font-display);
+    font-size: 1.25em;
+    font-weight: 300;
+    line-height: 0.7;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .discipline[open] .plus {
+    transform: rotate(45deg);
+  }
+
+  .skills {
+    overflow: hidden;
+  }
+
+  .discipline[open] .skills ul {
+    animation: skill-list-reveal 360ms ease-out 100ms both;
+  }
+
+  .skills ul {
+    list-style: none;
+    columns: 2;
+    column-gap: 2rem;
+    margin: 0;
+    padding: 0 0 1.5rem;
+    font-size: clamp(0.86rem, 1.1vw, 1rem);
+    line-height: 1.45;
+  }
+
+  .discipline li {
+    break-inside: avoid;
+  }
+
+  @keyframes skill-list-reveal {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .about-page {
+      padding: 9.2rem 0 3rem;
+    }
+
+    .about-panel {
       grid-template-columns: 1fr;
-      gap: 0.6rem;
+    }
+
+    .portrait img {
+      max-height: 38rem;
+      object-position: 54% 55%;
+    }
+
+    .portrait {
+      height: clamp(28rem, 120vw, 38rem);
+    }
+
+    .about-copy {
+      padding: 1.5rem 1rem 2.25rem;
+    }
+
+    .skills ul {
+      columns: 1;
     }
   }
 </style>
