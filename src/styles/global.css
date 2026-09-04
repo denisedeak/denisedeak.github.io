@@ -75,6 +75,19 @@ body.is-landing main {
   min-height: 0;
 }
 
+/* Contact has intentionally little content: reserve the spare viewport space
+   for the main area so its shared footer sits flush with the bottom edge. */
+body.is-contact {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+body.is-contact main {
+  min-height: 0;
+  display: grid;
+}
+
 img {
   display: block;
   max-width: 100%;

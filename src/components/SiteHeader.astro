@@ -134,6 +134,10 @@ const here = Astro.url.pathname.replace(/\/$/, '') || '/';
       background: rgba(191, 78, 50, 0.94);
     }
 
+    :global(body.is-about) .site-nav a {
+      color: var(--butter);
+    }
+
     .site-nav ul {
       justify-content: space-between;
       gap: 0.5rem;

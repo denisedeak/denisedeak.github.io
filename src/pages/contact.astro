@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import { site } from '../data/site';
 ---
 
-<Base title="contact">
+<Base title="contact" page="contact">
   <section class="contact-page" aria-labelledby="contact-title">
     <div class="contact-content">
       <h1 id="contact-title">Interested in collaborating?</h1>
@@ -30,7 +30,7 @@ import { site } from '../data/site';
   .contact-page {
     display: grid;
     align-items: center;
-    min-height: calc(100svh - clamp(11rem, 16vw, 14rem));
+    min-height: 100%;
     padding: clamp(9rem, 16vw, 13rem) var(--gutter) clamp(4rem, 8vw, 7rem);
   }
 
@@ -71,7 +71,7 @@ import { site } from '../data/site';
 
   @media (max-width: 640px) {
     .contact-page {
-      min-height: calc(100svh - 15rem);
+      min-height: 100%;
       padding: 12rem 1rem 4rem;
     }
 
