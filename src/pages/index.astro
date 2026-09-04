@@ -101,7 +101,11 @@ import { url } from '../lib/url';
   const stage = document.querySelector<HTMLElement>('.image-stage');
   const image = stage?.querySelector<HTMLImageElement>('.hero-media');
   const canvas = stage?.querySelector<HTMLCanvasElement>('.hero-liquid');
-  const canUseLiquid = window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+  const hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  // Use the responsive layout breakpoint rather than input type so browser mobile
+  // previews receive the same ambient motion as physical phones.
+  const useAutonomousLiquid = window.matchMedia('(max-width: 760px)').matches;
+  const canUseLiquid = (hasFinePointer || useAutonomousLiquid) &&
     !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (stage && image && canvas && canUseLiquid) {
@@ -187,6 +191,7 @@ import { url } from '../lib/url';
           let energy = 0;
           let lastFrame = 0;
           let isAnimating = false;
+          let animationFrame: number | undefined;
 
           const resize = () => {
             const bounds = stage.getBoundingClientRect();
@@ -212,18 +217,27 @@ import { url } from '../lib/url';
           const settle = (now: number) => {
             const elapsed = lastFrame ? Math.min(now - lastFrame, 50) : 16;
             lastFrame = now;
+
+            if (useAutonomousLiquid) {
+              const seconds = now * 0.001;
+              targetX = 0.5 + Math.sin(seconds * 0.19) * 0.24 + Math.sin(seconds * 0.43 + 1.2) * 0.08;
+              targetY = 0.52 + Math.cos(seconds * 0.15 + 0.45) * 0.2 + Math.sin(seconds * 0.31) * 0.07;
+              energy = 0.58 + Math.sin(seconds * 0.42) * 0.08;
+            }
+
             const follow = 1 - Math.exp(-elapsed * 0.05);
             pointerX += (targetX - pointerX) * follow;
             pointerY += (targetY - pointerY) * follow;
-            energy *= Math.exp(-elapsed * 0.003);
+            if (!useAutonomousLiquid) energy *= Math.exp(-elapsed * 0.003);
             draw(now);
 
-            if (energy > 0.008 || Math.hypot(targetX - pointerX, targetY - pointerY) > 0.0005) {
-              requestAnimationFrame(settle);
+            if (useAutonomousLiquid || energy > 0.008 || Math.hypot(targetX - pointerX, targetY - pointerY) > 0.0005) {
+              animationFrame = requestAnimationFrame(settle);
             } else {
               energy = 0;
               draw(now);
               isAnimating = false;
+              animationFrame = undefined;
             }
           };
 
@@ -231,7 +245,7 @@ import { url } from '../lib/url';
             if (!isAnimating) {
               isAnimating = true;
               lastFrame = 0;
-              requestAnimationFrame(settle);
+              animationFrame = requestAnimationFrame(settle);
             }
           };
 
@@ -246,22 +260,34 @@ import { url } from '../lib/url';
             resize();
             draw(0);
             stage.classList.add('is-liquid-ready');
+            if (useAutonomousLiquid) beginSettling();
           };
 
-          stage.addEventListener('pointermove', (event) => {
-            const bounds = stage.getBoundingClientRect();
-            const nextX = (event.clientX - bounds.left) / bounds.width;
-            const nextY = 1 - (event.clientY - bounds.top) / bounds.height;
-            const distance = Math.hypot(nextX - targetX, nextY - targetY);
-            targetX = nextX;
-            targetY = nextY;
-            energy = Math.min(1, Math.max(energy, 0.28) + distance * 3.2);
-            beginSettling();
-          });
-          stage.addEventListener('pointerleave', () => beginSettling());
+          if (!useAutonomousLiquid) {
+            stage.addEventListener('pointermove', (event) => {
+              const bounds = stage.getBoundingClientRect();
+              const nextX = (event.clientX - bounds.left) / bounds.width;
+              const nextY = 1 - (event.clientY - bounds.top) / bounds.height;
+              const distance = Math.hypot(nextX - targetX, nextY - targetY);
+              targetX = nextX;
+              targetY = nextY;
+              energy = Math.min(1, Math.max(energy, 0.28) + distance * 3.2);
+              beginSettling();
+            });
+            stage.addEventListener('pointerleave', () => beginSettling());
+          }
           window.addEventListener('resize', () => {
             resize();
             draw(performance.now());
+          });
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden && animationFrame) {
+              cancelAnimationFrame(animationFrame);
+              animationFrame = undefined;
+              isAnimating = false;
+            } else if (!document.hidden && useAutonomousLiquid) {
+              beginSettling();
+            }
           });
 
           if (image.complete) uploadTexture();

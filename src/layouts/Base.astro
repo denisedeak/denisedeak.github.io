@@ -15,6 +15,8 @@ interface Props {
   showFooter?: boolean;
   /** Pages can continue their own colour surface into the shared footer. */
   footerTone?: 'butter' | 'blush' | 'mist';
+  /** A page-specific hook for small, intentional shared-layout variations. */
+  page?: string;
 }
 
 const {
@@ -24,6 +26,7 @@ const {
   landing = false,
   showFooter = true,
   footerTone = 'butter',
+  page,
 } = Astro.props;
 const pageTitle = `${title} — ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -46,7 +49,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
 
   </head>
-  <body class:list={[overlayHeader && 'has-overlay-header', landing && 'is-landing']}>
+  <body class:list={[overlayHeader && 'has-overlay-header', landing && 'is-landing', page && `is-${page}`]}>
     <a class="skip-link" href="#main">Skip to content</a>
     <SiteHeader overlay={overlayHeader} />
     <main id="main">
