@@ -3,9 +3,13 @@ import { footerLinks, site } from '../data/site';
 import { url } from '../lib/url';
 
 const year = new Date().getFullYear();
+interface Props {
+  tone?: 'butter' | 'blush' | 'mist';
+}
+const { tone = 'butter' } = Astro.props;
 ---
 
-<footer class="site-footer">
+<footer class:list={['site-footer', `is-${tone}`]}>
   <ul class="footer-links">
     {
       footerLinks.map((item) => (
@@ -37,6 +41,14 @@ const year = new Date().getFullYear();
     padding: clamp(1rem, 2vw, 1.5rem) clamp(1rem, 2.5vw, 2rem);
     background: var(--butter);
     color: var(--ink);
+  }
+
+  .site-footer.is-blush {
+    background: var(--blush);
+  }
+
+  .site-footer.is-mist {
+    background: var(--mist);
   }
 
   .footer-links {

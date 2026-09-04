@@ -19,7 +19,7 @@ export type NavItem = { label: string; href: string; external?: boolean };
 
 export const nav: NavItem[] = [
   { label: 'about', href: '/about' },
-  { label: 'play', href: '/#projects' },
+  { label: 'play', href: '/play' },
   { label: 'contact', href: '/contact' },
 ];
 

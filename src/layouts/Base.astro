@@ -13,6 +13,8 @@ interface Props {
   landing?: boolean;
   /** Landing content includes its own contact panel. */
   showFooter?: boolean;
+  /** Pages can continue their own colour surface into the shared footer. */
+  footerTone?: 'butter' | 'blush' | 'mist';
 }
 
 const {
@@ -21,6 +23,7 @@ const {
   overlayHeader = false,
   landing = false,
   showFooter = true,
+  footerTone = 'butter',
 } = Astro.props;
 const pageTitle = `${title} — ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -49,6 +52,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <main id="main">
       <slot />
     </main>
-    {showFooter && <SiteFooter />}
+    {showFooter && <SiteFooter tone={footerTone} />}
   </body>
 </html>

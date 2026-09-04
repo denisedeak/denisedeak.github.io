@@ -1,0 +1,167 @@
+---
+import Base from '../layouts/Base.astro';
+
+const columns = [
+  [
+    {
+      kind: 'video',
+      src: '/media/product-7.mp4',
+      label: 'Product study seven',
+      aspect: '9 / 16',
+    },
+    {
+      kind: 'video',
+      src: '/media/chaos-01.mp4',
+      label: 'Chaos study one',
+      aspect: '1 / 1',
+    },
+  ],
+  [
+    {
+      kind: 'image',
+      src: '/media/spike-pocket.png',
+      alt: 'A Spike drink can tucked into a jeans pocket',
+      aspect: '2 / 3',
+    },
+    {
+      kind: 'video',
+      src: '/media/image-distort-instances.mp4',
+      label: 'Image distortion experiment',
+      aspect: '1 / 1',
+    },
+  ],
+  [
+    {
+      kind: 'image',
+      src: '/media/perfume-bottle.png',
+      alt: 'Amber perfume bottle in glowing light',
+      aspect: '2 / 3',
+    },
+    {
+      kind: 'video',
+      src: '/media/product-5.mp4',
+      label: 'Product study five',
+      aspect: '4 / 5',
+    },
+  ],
+] as const;
+---
+
+<Base title="play" footerTone="mist">
+  <section class="play-page" aria-label="Nise Studio experiments and moving-image work">
+    <div class="play-grid">
+      {
+        columns.map((column) => (
+          <div class="play-column">
+            {column.map((item) => (
+              <figure class="media-tile" style={`--aspect:${item.aspect}`}>
+                {
+                  item.kind === 'image' ? (
+                    <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+                  ) : (
+                    <video
+                      data-src={item.src}
+                      aria-label={item.label}
+                      autoplay
+                      muted
+                      loop
+                      playsinline
+                      preload="metadata"
+                    ></video>
+                  )
+                }
+              </figure>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  :global(body) {
+    background: var(--mist);
+    color: var(--cocoa);
+  }
+
+  :global(.site-header .wordmark),
+  :global(.site-header .site-nav a) {
+    color: var(--cocoa);
+  }
+
+  .play-page {
+    padding: clamp(9rem, 14vw, 13rem) var(--gutter) clamp(3rem, 7vw, 7rem);
+  }
+
+  .play-grid {
+    width: 100%;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .play-column {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .media-tile {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    background: rgba(89, 52, 29, 0.08);
+    aspect-ratio: var(--aspect);
+  }
+
+  .media-tile img,
+  .media-tile video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 800px) {
+    .play-page {
+      padding: 9.5rem 1rem 3rem;
+    }
+
+    .play-grid {
+      grid-template-columns: 1fr;
+    }
+
+  }
+</style>
+
+<script>
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-src]');
+
+  const loadAndPlay = (video: HTMLVideoElement) => {
+    if (!video.src) {
+      video.src = video.dataset.src ?? '';
+      video.load();
+    }
+    video.play().catch(() => undefined);
+  };
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) loadAndPlay(video);
+          else video.pause();
+        });
+      },
+      { rootMargin: '280px 0px' },
+    );
+
+    videos.forEach((video) => observer.observe(video));
+  } else {
+    videos.forEach(loadAndPlay);
+  }
+</script>
