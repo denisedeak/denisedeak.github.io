@@ -1,0 +1,53 @@
+---
+import { url } from '../lib/url';
+
+interface Props {
+  intro: string;
+}
+const { intro } = Astro.props;
+const asset = (file: string) => url(`/images/projects/muse-vol-2/${file}.webp`);
+---
+
+<div class="gallery">
+  <img class="wide" src={asset('Header')} width="2528" height="1132" alt="Muse Vol.2 cover with a portrait behind fluted glass" />
+  <p>{intro}</p>
+  <img src={asset('Image_01')} width="1686" height="2528" loading="lazy" alt="Muse report cover displayed on a laptop" />
+  <img src={asset('Image_02')} width="1686" height="2528" loading="lazy" alt="Mobile report layout with a fragmented portrait" />
+  <img class="wide" src={asset('Image_03')} width="2528" height="1686" loading="lazy" alt="Four report spreads featuring survey data, an interview and digital twins" />
+  <img class="wide" src={asset('Image_04')} width="2528" height="1686" loading="lazy" alt="A presentation slide on deepfakes displayed on a wall-mounted screen" />
+  <div class="copy">
+    <p>Fluted glass breaks a portrait into narrow slices. The effect runs through the cover, chapter openers and interview pages.</p>
+    <p>Between portraits, the report gives space to survey findings and the voices of creators.</p>
+  </div>
+  <img src={asset('Image_05')} width="1686" height="2528" loading="lazy" alt="Detail of a face refracted through glass" />
+  <img src={asset('Image_06')} width="1686" height="2528" loading="lazy" alt="Katrine Rasmussen of Pixelz on the creative skills behind AI tools" />
+</div>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--gutter);
+    column-gap: clamp(0.35rem, 0.65vw, 0.6rem);
+    margin-top: var(--gutter);
+  }
+
+  .wide, .copy, .gallery > p { grid-column: 1 / -1; }
+  img { width: 100%; height: auto; display: block; }
+
+  p {
+    margin: 0;
+    max-width: 58ch;
+    font: 400 clamp(1.1rem, 2.2vw, 1.75rem)/1.3 var(--font-display);
+  }
+
+  .copy, .gallery > p {
+    margin: clamp(1.25rem, 3.5vw, 2.75rem) var(--gutter);
+  }
+  p + p { margin-top: 1em; }
+
+  @media (max-width: 560px) {
+    .gallery { grid-template-columns: 1fr; }
+    img:not(.wide) + img:not(.wide) { margin-top: -0.4rem; }
+  }
+</style>

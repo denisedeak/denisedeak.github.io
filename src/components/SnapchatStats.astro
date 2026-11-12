@@ -1,0 +1,79 @@
+---
+const metrics = [
+  { value: 30, suffix: 'M', label: 'views' },
+  { value: 29, suffix: 'M', label: 'plays' },
+  { value: 230, suffix: 'K', label: 'shares' },
+];
+---
+<dl class="snap-stats" aria-label="Campaign results">
+  {metrics.map(({ value, suffix, label }) => (
+    <div class="glass">
+      <dt>{label}</dt>
+      <dd><span class="visually-hidden">{value}{suffix}</span><span aria-hidden="true"><span data-count={value}>{value}</span>{suffix}</span></dd>
+    </div>
+  ))}
+</dl>
+<style>
+  .snap-stats {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: clamp(.32rem,1vw,.8rem);
+    margin: var(--gutter) 0 0;
+    padding: clamp(.5rem,2vw,1.5rem);
+    border-radius: 1.4rem;
+    background: radial-gradient(ellipse at 18% 95%,#fff300,transparent 60%), radial-gradient(ellipse at 92% 5%,#ffdc94,transparent 55%),#fffbd4;
+    font-family: var(--font-display);
+  }
+  .glass {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(.55rem,2vw,1.6rem);
+    border-radius: 1rem;
+    background: linear-gradient(165deg,#ffffffb8,#ffffff60);
+    backdrop-filter: blur(15px) saturate(1.25);
+    box-shadow: inset 0 1px 1px white,inset 0 0 0 1px #ffffff85,0 6px 18px -12px #63560080;
+  }
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--x,20%) var(--y,0%),#ffffffbd,transparent 63%);
+    pointer-events: none;
+  }
+  dt, dd { position: relative; margin: 0; }
+  dt { font-size: clamp(.8rem,1.4vw,1rem); }
+  dd { font-size: clamp(1.55rem,6.2vw,4.8rem); line-height: 1; letter-spacing: -.065em; font-variant-numeric: tabular-nums; }
+</style>
+<script>
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        observer.unobserve(entry.target);
+        const el = entry.target as HTMLElement;
+        const value = Number(el.dataset.count);
+        const start = performance.now();
+        const duration = value > 50 ? 1700 : 1100;
+        function tick(now: number) {
+          const p = Math.min(1, Math.max(0, (now - start) / duration));
+          el.textContent = String(Math.round(value * (1 - (1 - p) ** 4)));
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        tick(start);
+      }
+    }, { threshold: 0.6 });
+    document.querySelectorAll('[data-count]').forEach(el => observer.observe(el));
+    document.querySelectorAll<HTMLElement>('.snap-stats .glass').forEach(card => {
+      card.addEventListener('pointermove', event => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--x', (event.clientX - rect.left) + 'px');
+        card.style.setProperty('--y', (event.clientY - rect.top) + 'px');
+      });
+    });
+  }
+</script>

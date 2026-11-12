@@ -1,0 +1,63 @@
+---
+import { url } from '../lib/url';
+
+type Tile = ({ file: string; label: string; width: number; height: number } | { copy: string } | { insert: true }) & { wide?: boolean };
+interface Props {
+  intro: string;
+  slug: string;
+  coverAlt: string;
+  coverWidth?: number;
+  tiles: Tile[];
+}
+const { intro, slug, coverAlt, coverWidth = 2528, tiles } = Astro.props;
+---
+<div class="campaign">
+  <img class="cover" src={url(`/images/projects/${slug}/Header.webp`)} alt={coverAlt} width={coverWidth} height="1132" />
+  <p class="intro">{intro}</p>
+  <div class="grid">
+    {tiles.map(tile => 'insert' in tile ? <slot /> : 'copy' in tile ? <p class:list={[{ wide: tile.wide }]}>{tile.copy}</p> : tile.file.startsWith('Video') ? (
+      <video class:list={[{ wide: tile.wide }]} src={url(`/media/${slug}/` + tile.file + '.mp4#t=0.1')} aria-label={tile.label}
+        width={tile.width} height={tile.height} controls muted autoplay loop playsinline preload="metadata"></video>
+    ) : (
+      <img class:list={[{ wide: tile.wide }]} src={url(`/images/projects/${slug}/` + tile.file + '.webp')} alt={tile.label}
+        width={tile.width} height={tile.height} loading="lazy" />
+    ))}
+  </div>
+</div>
+
+<style>
+  .campaign { margin-top: var(--gutter); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1vw, 0.8rem);
+    align-items: center;
+  }
+  img, video { display: block; width: 100%; height: auto; }
+  video { background: var(--ink); }
+  p {
+    margin: var(--gutter);
+    max-width: 58ch;
+    font: 400 clamp(1.1rem, 2.2vw, 1.75rem)/1.3 var(--font-display);
+  }
+  .wide { grid-column: 1 / -1; }
+  p.wide { margin-block: clamp(2rem, 5vw, 4rem); }
+  .intro { margin-block: clamp(2rem, 5vw, 4rem); }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const video = entry.target as HTMLVideoElement;
+      if (entry.isIntersecting) {
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    }
+  });
+  document.querySelectorAll('.campaign video').forEach(video => observer.observe(video));
+</script>

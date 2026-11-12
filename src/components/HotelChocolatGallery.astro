@@ -1,0 +1,19 @@
+---
+import CampaignGallery from './CampaignGallery.astro';
+
+interface Props {
+  intro: string;
+}
+const { intro } = Astro.props;
+const tiles = [
+  { file: 'Image_01', label: 'Three chocolates stacked beside a curved line of lettering', width: 1080, height: 1080 },
+  { file: 'Video_02', label: 'Hot chocolate pouring into a cup', width: 720, height: 720 },
+  { file: 'Video_03', label: 'Chocolate selection against a deep blue backdrop', width: 1080, height: 1080 },
+  { file: 'Image_04', label: 'Illustrated guide to the Pod Cup', width: 1080, height: 1080 },
+  { copy: 'Type follows the curve of a chocolate or the arc of a pour. Across the series, each composition takes its shape from the product.', wide: true },
+  { file: 'Image_05', label: 'Hotel Chocolat campaign displayed on a laptop', width: 1686, height: 2528 },
+  { file: 'Image_07', label: 'A phone displaying the campaign balanced between chocolates', width: 1686, height: 2528 },
+  { file: 'Image_06', label: 'Six Hotel Chocolat social posts presented together', width: 2528, height: 1686, wide: true },
+];
+---
+<CampaignGallery slug="hotel-chocolat" coverAlt="Hotel Chocolat wordmark on cream" {intro} {tiles} />

@@ -3,7 +3,7 @@ export const site = {
   name: 'NISE STUDIO',
   tagline: 'Brand & web design studio',
   description:
-    'Independent brand and web design studio working across lifestyle, fashion and beauty.',
+    'Independent design studio bringing brands to life through identity, design and motion',
   /** Filename inside public/images/ — swap for your own photo (.jpg/.webp/.png). */
   heroImage: 'landing-background.png',
   email: 'deak.denise@gmail.com',

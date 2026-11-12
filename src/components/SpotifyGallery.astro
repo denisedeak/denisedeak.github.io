@@ -1,0 +1,21 @@
+---
+import CampaignGallery from './CampaignGallery.astro';
+
+interface Props {
+  intro: string;
+}
+const { intro } = Astro.props;
+const tiles = [
+  { file: 'Video_01', label: 'New Music Friday motion artwork', width: 1080, height: 1080 },
+  { file: 'Image_02', label: 'New Music Friday artist portrait', width: 1080, height: 1080 },
+  { file: 'Image_03', label: 'Spotify EQUAL billboard in Times Square', width: 1080, height: 1350 },
+  { file: 'Video_04', label: 'Spotify campaign animation', width: 960, height: 1200 },
+  { file: 'Video_05', label: 'Spotify artist portrait in motion', width: 720, height: 1280 },
+  { file: 'Video_06', label: 'Layered artist portrait animation', width: 1080, height: 1920 },
+  { file: 'Image_07', label: 'Spotify EQUAL artist campaign artwork', width: 1080, height: 1350 },
+  { copy: 'From New Music Friday to EQUAL and Fresh Finds Africa, each campaign gives the artist a different way to take centre stage.' },
+  { file: 'Video_08', label: 'Spotify Africa artist feature with Nikita Kering’', width: 720, height: 1280 },
+  { file: 'Video_09', label: 'Fresh Finds Africa artist feature', width: 720, height: 1280 },
+];
+---
+<CampaignGallery slug="spotify-africa" coverAlt="Spotify Africa cover featuring an artist in white sunglasses" {intro} {tiles} />

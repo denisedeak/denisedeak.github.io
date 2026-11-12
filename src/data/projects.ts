@@ -54,8 +54,8 @@ export const projects: Project[] = [
     reveal: { w: 340, rotate: 4, dy: 10 },
   },
   {
-    title: 'The Identity List',
-    slug: 'the-identity-list',
+    title: 'The Impact List',
+    slug: 'the-impact-list',
     image: 'paper-moon.svg',
     year: '2024',
     role: 'Art direction / Campaign',
@@ -66,11 +66,11 @@ export const projects: Project[] = [
   {
     title: 'Spotify Africa',
     slug: 'spotify-africa',
-    image: 'quarry.svg',
+    image: 'spotify-africa/cover.webp',
     year: '2024',
-    role: 'Visual identity / Packaging',
+    role: 'Social / Visual Identity / Art Direction / Video Editing / Graphic & Motion Design',
     summary:
-      'Packaging and identity for a small-batch skincare range. The system is one typeface, two inks and a lot of restraint.',
+      'Served as Brand Guardian and visual developer for Spotify Africa, ensuring consistency and evolution of the brand across markets.',
     reveal: { w: 330, rotate: 2 },
   },
   {
@@ -86,41 +86,41 @@ export const projects: Project[] = [
   {
     title: 'Snapchat',
     slug: 'snapchat',
-    image: 'the-travelogue.svg',
+    image: 'snapchat/cover.webp',
     year: '2024',
-    role: 'Web design / Editorial',
+    role: 'AR / 3D Animation / 2D Animation / Art Direction',
     summary:
-      'An editorial site for a travel journal. Long-form pieces set in a single column, with full-bleed photography that never pushes the text off the screen.',
+      'A series of Snapchat lenses and animations, moving between the phone screen and out-of-home campaign artwork.',
     reveal: { w: 360, rotate: 3 },
   },
   {
     title: 'Roblox',
     slug: 'roblox',
-    image: 'lantern.svg',
+    image: 'roblox/cover.webp',
     year: '2023',
-    role: 'Brand system / Social',
+    role: 'Motion Design / Art Direction / Video Editing',
     summary:
-      'An ongoing visual system for an outdoor apparel brand. Built so their in-house team can produce a month of work in an afternoon without the grid drifting.',
+      'A series of films exploring the worlds of Roblox, from widescreen sequences to vertical edits for mobile.',
     reveal: { w: 330, rotate: -2, dx: 15 },
   },
   {
     title: 'Hotel Chocolat',
     slug: 'hotel-chocolat',
-    image: 'driftwood.svg',
+    image: 'hotel-chocolat/Image_07.webp',
     year: '2023',
-    role: 'Visual identity',
+    role: 'Social Visual Identity / Art Direction / Graphic & Motion Design',
     summary:
-      'A wordmark and type system for an architecture practice. Everything is set in one family at three sizes — the restraint is the identity.',
+      'A social identity for Hotel Chocolat, pairing product photography with playful typography and motion.',
     reveal: { w: 310, rotate: 5 },
   },
   {
     title: 'Muse Vol.2',
     slug: 'muse-vol-2',
-    image: 'september.svg',
+    image: 'muse-vol-2/Image_01.webp',
     year: '2023',
-    role: 'Branding / Packaging',
+    role: 'Branding / Report / Digital Magazine / AI',
     summary:
-      'Branding for a coastal swim label. A palette pulled from the water at four times of day, applied across swing tags, packaging and a small storefront.',
+      'Muse Vol.2 explores the impact of artificial intelligence on the creator economy.',
     reveal: { w: 320, rotate: -3, dy: 8 },
   },
   {

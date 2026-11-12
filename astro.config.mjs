@@ -11,6 +11,7 @@ export default defineConfig({
   site: SITE,
   base: BASE,
   trailingSlash: 'ignore',
+  redirects: { '/projects/the-identity-list': '/projects/the-impact-list' },
   build: { format: 'directory' },
   image: {
     // Thumbnails are decorative and already sized; keep the build fast.

@@ -1,4 +1,9 @@
 ---
+import HotelChocolatGallery from '../../components/HotelChocolatGallery.astro';
+import SnapchatGallery from '../../components/SnapchatGallery.astro';
+import RobloxGallery from '../../components/RobloxGallery.astro';
+import SpotifyGallery from '../../components/SpotifyGallery.astro';
+import MuseGallery from '../../components/MuseGallery.astro';
 import Base from '../../layouts/Base.astro';
 import { projects, projectHref, projectImage, type Project } from '../../data/projects';
 import { url } from '../../lib/url';
@@ -13,7 +18,10 @@ export function getStaticPaths() {
 interface Props {
   project: Project;
 }
-const { project } = Astro.props;
+const { project }: Props = Astro.props;
+
+const galleries: Partial<Record<string, typeof MuseGallery>> = { 'muse-vol-2': MuseGallery, 'spotify-africa': SpotifyGallery, 'hotel-chocolat': HotelChocolatGallery, roblox: RobloxGallery, snapchat: SnapchatGallery };
+const Gallery = galleries[project.slug];
 
 // Next case study in the list, wrapping around.
 const idx = projects.findIndex((p) => p.slug === project.slug);
@@ -21,9 +29,12 @@ const next = projects[(idx + 1) % projects.length];
 ---
 
 <Base title={project.title} description={project.summary}>
-  <article class="case">
+  <article class:list={['case', { 'has-gallery': Boolean(Gallery) }]}>
     <header class="case-head">
       <h1>{project.title}</h1>
+      {Gallery ? (
+        <p class="discipline">{project.role}</p>
+      ) : (
       <dl class="meta">
         <div>
           <dt>Year</dt>
@@ -34,18 +45,23 @@ const next = projects[(idx + 1) % projects.length];
           <dd>{project.role}</dd>
         </div>
       </dl>
+      )}
     </header>
 
-    <p class="summary">{project.summary}</p>
+    {Gallery ? <Gallery intro={project.summary} /> : (
+      <>
+        <p class="summary">{project.summary}</p>
 
-    <img
-      class="case-image"
-      src={url(projectImage(project))}
-      alt={`${project.title} — project imagery`}
-      width="344"
-      height="430"
-      decoding="async"
-    />
+        <img
+          class="case-image"
+          src={url(projectImage(project))}
+          alt={`${project.title} — project imagery`}
+          width="344"
+          height="430"
+          decoding="async"
+        />
+      </>
+    )}
 
     <nav class="case-next" aria-label="Next project">
       <a href={url(projectHref(next))}>
@@ -79,6 +95,29 @@ const next = projects[(idx + 1) % projects.length];
     font-size: clamp(2rem, 6vw, 4.5rem);
     line-height: 1.1;
     letter-spacing: 0.01em;
+  }
+
+  .has-gallery {
+    padding-top: clamp(9rem, 11vw, 11rem);
+  }
+
+  .has-gallery .case-head {
+    padding-bottom: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  @media (max-width: 640px) {
+    .has-gallery .case-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.65rem;
+    }
+  }
+
+  .discipline {
+    margin: 0;
+    font-size: clamp(0.82rem, 1vw, 0.95rem);
+    color: var(--ink-60);
+    font-family: var(--font-display);
   }
 
   .meta {

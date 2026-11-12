@@ -1,0 +1,20 @@
+---
+import CampaignGallery from './CampaignGallery.astro';
+import SnapchatStats from './SnapchatStats.astro';
+
+interface Props { intro: string }
+const { intro } = Astro.props;
+const tiles = [
+  { file: 'Video_01', label: 'Snapchat lens in use', width: 704, height: 1280 },
+  { file: 'Video_02', label: 'Snapchat campaign at Shoreditch Town Hall', width: 1080, height: 1920 },
+  { file: 'Image_01', label: 'Snapchat artwork featuring three vertical Snaps on a yellow background', width: 2400, height: 1792, wide: true },
+  { insert: true as const },
+  { copy: 'On a phone, the lens moves with the person using it. At billboard scale, a single frame brings the effect into focus.', wide: true },
+  { file: 'Video_03', label: 'Widescreen Snapchat campaign edit', width: 2258, height: 1080, wide: true },
+  { file: 'Video_04', label: 'Second Snapchat lens demonstration', width: 704, height: 1280 },
+  { file: 'Video_05', label: 'Closing vertical Snapchat lens edit', width: 686, height: 1280 },
+];
+---
+<CampaignGallery slug="snapchat" coverAlt="Snapchat ghost and campaign portrait on a billboard against a blue sky" {intro} {tiles}>
+  <SnapchatStats />
+</CampaignGallery>

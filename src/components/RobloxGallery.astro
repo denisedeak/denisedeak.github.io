@@ -1,0 +1,18 @@
+---
+import CampaignGallery from './CampaignGallery.astro';
+
+interface Props {
+  intro: string;
+}
+const { intro } = Astro.props;
+const tiles = [
+  { file: 'Video_01', label: 'Roblox widescreen campaign film', width: 1920, height: 1080, wide: true },
+  { file: 'Video_02', label: 'Roblox vertical edit, first film', width: 1080, height: 1920 },
+  { file: 'Video_03', label: 'Roblox vertical edit, second film', width: 1080, height: 1920 },
+  { copy: 'Three phone screens frame three different Roblox worlds. The closing sequence takes the work from a handheld screen to a wall-sized display.', wide: true },
+  { file: 'Image_04', label: 'Three phones showing different scenes from Roblox', width: 2259, height: 1080, wide: true },
+  { file: 'Video_05', label: 'Closing Roblox widescreen edit', width: 1920, height: 1080, wide: true },
+  { file: 'Image_06', label: 'Roblox Tower Defense Simulator artwork on a wall-sized screen', width: 2259, height: 1349, wide: true },
+];
+---
+<CampaignGallery slug="roblox" coverAlt="Roblox wordmark over a collage of game artwork" coverWidth={2247} {intro} {tiles} />
